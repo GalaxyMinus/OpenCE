@@ -681,6 +681,7 @@ boolean cheat_spawn_object(
 		spawn_pos.z = ground_collision.point.z + 0.1f;
 	}
 
+	// fix for crashes prob
 	/* 1. Location and cluster validation */
 	scenario_location_from_point(&spawn_loc, &spawn_pos);
 	if (spawn_loc.cluster_index == NONE)
@@ -708,6 +709,7 @@ boolean cheat_spawn_object(
 		return FALSE;
 	}
 
+	// MAIN CHECK
 	/* 3. Collision sphere check against structure BSP */
 	if (collision_test_sphere(&spawn_pos, bounding_radius * 0.75f, host_unit_index))
 	{
@@ -716,6 +718,7 @@ boolean cheat_spawn_object(
 	}
 
 	/* 4. Overlap check with nearby objects */
+
 	nearby_count = objects_in_sphere(
 		0,
 		_object_mask_vehicle | _object_mask_biped | _object_mask_scenery | _object_mask_machine,
@@ -725,6 +728,7 @@ boolean cheat_spawn_object(
 		nearby_objects,
 		NUMBEROF(nearby_objects));
 
+/*
 	for (i = 0; i < nearby_count; i++)
 	{
 		if (nearby_objects[i] != host_unit_index)
@@ -735,7 +739,7 @@ boolean cheat_spawn_object(
 			return FALSE;
 		}
 	}
-
+*/
 	/* Instantiate object */
 	object_placement_data_new(&placement_data, definition_index, NONE);
 	placement_data.position = spawn_pos;
