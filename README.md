@@ -1,8 +1,3 @@
-# THIS PROJECT IS A FORK OF OPENCE, PLEASE CHECK OUT EVERYTHING ELSE ABOUT THEM!
-## https://github.com/OpenCommunityEdition/OpenCE/
-
-----
-
 # Halo: Combat Evolved for Linux, Windows, Android and the web
 
 [![Join our Discord](https://invidget.switchblade.xyz/9gqcHyr5km)](https://discord.gg/9gqcHyr5km)
