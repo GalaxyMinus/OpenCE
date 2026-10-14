@@ -3185,7 +3185,7 @@ boolean players_bring_to_player(
 	short missed_count = 0;
 	long target_unit = NONE;
 
-	if (game_connection() != _game_connection_network_server)
+	if (!network_coop_active() || game_connection() != _game_connection_network_server)
 	{
 		console_warning("bringto: only the host can teleport players");
 		return FALSE;
