@@ -386,8 +386,8 @@ riding a vehicle, nor held by the scripts). */
 boolean players_coop_waiting_to_start(
 	long player_index);
 /* port: the co-op host's bringto command: everyone comes to the host */
-boolean players_coop_bring_to_host(
-	void);
+boolean players_bring_to_player(
+	char const *target_name);
 /* port: TRUE if `position` is inside a switch trigger for the BSP that is
 loaded. A player left there switches the level on the next tick. */
 boolean player_position_switches_bsp(
