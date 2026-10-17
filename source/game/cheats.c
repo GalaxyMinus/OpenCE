@@ -678,7 +678,8 @@ boolean cheat_spawn_object(
 		host_unit_index,
 		&ground_collision))
 	{
-		spawn_pos.z = ground_collision.point.z + 0.1f;
+		// add bounding radius to solve, plus a padding for collision errors
+		spawn_pos.z = ground_collision.point.z + bounding_radius + 0.1f;
 	}
 
 	// fix for crashes prob
@@ -718,6 +719,8 @@ boolean cheat_spawn_object(
 	}
 
 	/* 4. Overlap check with nearby objects */
+	/*
+	  TODO: fix nearby objects
 
 	nearby_count = objects_in_sphere(
 		0,
@@ -728,7 +731,7 @@ boolean cheat_spawn_object(
 		nearby_objects,
 		NUMBEROF(nearby_objects));
 
-/*
+
 	for (i = 0; i < nearby_count; i++)
 	{
 		if (nearby_objects[i] != host_unit_index)
