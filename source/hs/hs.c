@@ -3382,7 +3382,7 @@ typedef void (*hs_token_enumerator)(
 
 struct hs_function_table_storage
 {
-	struct hs_function_definition const *functions[418 + 4];
+	struct hs_function_definition const *functions[418 + 5];
 	struct profile_section profile;
 	hs_token_enumerator token_enumerators[18];
 };
