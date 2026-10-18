@@ -3382,7 +3382,7 @@ typedef void (*hs_token_enumerator)(
 
 struct hs_function_table_storage
 {
-	struct hs_function_definition const *functions[418 + 5];
+	struct hs_function_definition const *functions[418 + 4];
 	struct profile_section profile;
 	hs_token_enumerator token_enumerators[18];
 };
@@ -15454,6 +15454,34 @@ static boolean hs_compile_and_evaluate_command(
 			return players_bring_to_player(name[0] ? name : NULL);
 		}
 	}
+
+	/* port: the host's spawn command, which spawns an object (such as a vehicle) near the host */
+	{
+		char const *text = hs_host_player_command(expression, "spawn");
+
+		if (text)
+		{
+			char name[128];
+			long length = 0;
+
+			if (hs_playing_in_anothers_game())
+			{
+				console_warning("spawn: only the host of the game can spawn objects");
+				return FALSE;
+			}
+
+			while (*text == ' ' || *text == '\t' || *text == '"')
+				text++;
+			while (*text && *text != '"' && *text != ')' && length < (long)sizeof(name) - 1)
+				name[length++] = *text++;
+			while (length > 0 && (name[length - 1] == ' ' || name[length - 1] == '\t'))
+				length--;
+			name[length] = 0;
+
+			return cheat_spawn_object(name);
+		}
+	}
+
 	/* port: the players' vote to kick a player ("votekick <player name>",
 	or the name's start: Tab completes it), on any machine of a network
 	game: the host counts (network_votekick.c) */
