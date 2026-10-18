@@ -486,6 +486,23 @@ void cheat_all_vehicles(
 	return;
 }
 
+/* port: whether a tag path belongs to allowed spawn categories (vehicles, powerups, weapons) */
+static boolean cheat_tag_is_spawnable(
+	char const *full_name)
+{
+	if (!full_name || !full_name[0])
+		return FALSE;
+
+	if (!_strnicmp(full_name, "vehicles\\", 9) || !_strnicmp(full_name, "vehicles/", 9) ||
+		!_strnicmp(full_name, "powerups\\", 9) || !_strnicmp(full_name, "powerups/", 9) ||
+		!_strnicmp(full_name, "weapons\\", 8) || !_strnicmp(full_name, "weapons/", 8))
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 /* port: finds an object definition tag matching the given tag identifier (name or index) */
 static long cheat_find_object_tag(
 	char const *tag_identifier)
@@ -502,6 +519,12 @@ static long cheat_find_object_tag(
 	if (!tag_identifier || !tag_identifier[0])
 		return NONE;
 
+	/* 0. Apply aliases: tank -> scorpion, jeep -> warthog */
+	if (!_stricmp(tag_identifier, "tank"))
+		tag_identifier = "scorpion";
+	else if (!_stricmp(tag_identifier, "jeep"))
+		tag_identifier = "warthog";
+
 	/* 1. Check if the identifier is a numerical or hexadecimal tag ID */
 	parsed_id = strtoul(tag_identifier, &endptr, 0);
 	if (endptr != tag_identifier && *endptr == 0)
@@ -509,7 +532,10 @@ static long cheat_find_object_tag(
 		if (tag_index_is_group(parsed_id, OBJECT_DEFINITION_TAG) ||
 			object_definition_index_to_object_type(parsed_id) != NONE)
 		{
-			return (long)parsed_id;
+			char const *full_name = tag_get_name((long)parsed_id);
+			if (cheat_tag_is_spawnable(full_name))
+				return (long)parsed_id;
+			return NONE;
 		}
 	}
 
@@ -535,6 +561,9 @@ static long cheat_find_object_tag(
 
 		full_name = tag_get_name(tag_index);
 		if (!full_name || !full_name[0])
+			continue;
+
+		if (!cheat_tag_is_spawnable(full_name))
 			continue;
 
 		stripped_name = tag_name_strip_path(full_name);
@@ -619,6 +648,12 @@ boolean cheat_spawn_object(
 	if (definition_index == NONE)
 	{
 		console_warning("spawn: FAIL - object tag \"%s\" not found", tag_identifier);
+		return FALSE;
+	}
+
+	if (!cheat_tag_is_spawnable(tag_get_name(definition_index)))
+	{
+		console_warning("spawn: FAIL - only vehicles, powerups, or weapons can be spawned");
 		return FALSE;
 	}
 
